@@ -453,8 +453,6 @@
   <script>
     // ตัวอย่างฐานข้อมูลคำศัพท์สเปน (สร้างคลังคำศัพท์ตัวอย่างสำหรับ 20 รอบ)
     const baseVocabulary = [
-      { es: "Hola", pos: "คำทักทาย", th: "สวัสดี", exEs: "¡Hola! ¿Cómo estás?", exTh: "สวัสดี! คุณเป็นอย่างไรบ้าง?" },
-      { es: "Gracias", pos: "คำนาม", th: "ขอบคุณ", exEs: "Muchas gracias por tu ayuda.", exTh: "ขอบคุณมากสำหรับความช่วยเหลือของคุณ" },
       { w: "el", pos: "art.", m: "ผู้ชาย (คำนำหน้านาม)", s: "El libro es bueno.", sth: "หนังสือเล่มนี้ดี" },
       { w: "la", pos: "art.", m: "ผู้หญิง (คำนำหน้านาม)", s: "La casa es grande.", sth: "บ้านหลังนี้ใหญ่" },
       { w: "un", pos: "art.", m: "หนึ่ง (ผู้ชาย)", s: "Un perro camina.", sth: "สุนัขตัวหนึ่งกำลังเดิน" },
@@ -1350,16 +1348,8 @@
       { w: "montaña", pos: "n.", m: "ภูเขา", s: "Subimos a la montaña.", sth: "พวกเราขึ้นไปบนภูเขา" },
       { w: "río", pos: "n.", m: "แม่น้ำ", s: "El río es largo.", sth: "แม่น้ำสายนี้ยาว" },
       { w: "Fiesta", pos: "n.", m: "งานเลี้ยง", s: "La fiesta es divertida.", sth: "งานเลี้ยงสนุกมาก" },
-      { w: "Año", pos: "n.", m: "ปี", s: "Tengo veinte años.", sth: "ฉันอายุยี่สิบปี" },
-      { es: "Por favor", pos: "วลี", th: "ได้โปรด / กรุณา", exEs: "Un café, por favor.", exTh: "ขอกาแฟหนึ่งแก้วครับ/ค่ะ" },
-      { es: "Amigo", pos: "คำนาม (m.)", th: "เพื่อน", exEs: "Él es mi mejor amigo.", exTh: "เขาคือเพื่อนสนิทของฉัน" },
-      { es: "Comer", pos: "คำกริยา", th: "กิน / ทาน", exEs: "Vamos a comer juntos.", exTh: "พวกเราไปกินข้าวด้วยกันเถอะ" },
-      { es: "Casa", pos: "คำนาม (f.)", th: "บ้าน", exEs: "Mi casa es muy grande.", exTh: "บ้านของฉันใหญ่มาก" },
-      { es: "Sol", pos: "คำนาม (m.)", th: "พระอาทิตย์", exEs: "El sol brilla hoy.", exTh: "วันนี้พระอาทิตย์ส่องแสงเจิดจ้า" },
-      { es: "Agua", pos: "คำนาม (f.)", th: "น้ำ", exEs: "Quiero beber agua.", exTh: "ฉันอยากดื่มน้ำ" },
-      { es: "Tiempo", pos: "คำนาม (m.)", th: "เวลา / อากาศ", exEs: "No tengo mucho tiempo.", exTh: "ฉันไม่มีเวลามากนัก" },
-      { es: "Feliz", pos: "คำคุณศัพท์", th: "มีความสุข", exEs: "Estoy muy feliz hoy.", exTh: "วันนี้ฉันมีความสุขมาก" }
-    ];
+      { w: "Año", pos: "n.", m: "ปี", s: "Tengo veinte años.", sth: "ฉันอายุยี่สิบปี" }
+      ];
 
     // จำลองสร้างคำศัพท์รอบละ 50 คำ รวม 20 รอบ (1,000 คำ)
     const roundsData = {};
