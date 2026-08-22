@@ -1,476 +1,629 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spanish Flashcards</title>
-    <style>
-        :root {
-            --bg-color: #FAFAFA;
-            --card-bg: #FFFFFF;
-            --primary-cream: #F5EFEB;
-            --accent-cream: #E8DFD8;
-            --text-main: #333333;
-            --text-sub: #666666;
-            --border-color: #E0E0E0;
-            --shadow: 0 4px 20px rgba(0,0,0,0.05);
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ฝึกภาษาสเปน - Spanish Flashcards</title>
+  <!-- Google Fonts: Inter & Noto Sans Thai -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Thai:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* CSS Variables: Warm Cream Theme */
+    :root {
+      --bg-color: #FAF8F5;
+      --card-bg: #FFFFFF;
+      --card-back-bg: #FCFBF9;
+      --text-main: #33312E;
+      --text-muted: #7C7871;
+      --accent-color: #D4A373;
+      --accent-hover: #C39262;
+      --green-btn: #81B29A;
+      --green-hover: #6E9F87;
+      --orange-btn: #E07A5F;
+      --orange-hover: #CD674C;
+      --border-color: #E6E1DA;
+      --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.03);
+    }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', 'Noto Sans Thai', sans-serif;
+    }
 
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-        }
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
 
-        /* Navbar & Sidebar Header */
-        header {
-            width: 100%;
-            padding: 15px 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background-color: var(--card-bg);
-            border-bottom: 1px solid var(--border-color);
-        }
+    /* Header & Navigation */
+    header {
+      width: 100%;
+      padding: 18px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border-color);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
 
-        .menu-btn {
-            font-size: 24px;
-            cursor: pointer;
-            background: none;
-            border: none;
-            color: var(--text-main);
-        }
+    .menu-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      padding: 8px;
+    }
 
-        .round-title {
-            font-size: 16px;
-            font-weight: 600;
-            color: var(--text-sub);
-        }
+    .menu-btn div {
+      width: 24px;
+      height: 2.5px;
+      background-color: var(--text-main);
+      border-radius: 2px;
+    }
 
-        /* Sidebar Navigation */
-        .sidebar {
-            position: fixed;
-            top: 0;
-            left: -280px;
-            width: 280px;
-            height: 100%;
-            background-color: var(--card-bg);
-            box-shadow: var(--shadow);
-            transition: 0.3s ease;
-            z-index: 100;
-            padding: 20px;
-            overflow-y: auto;
-        }
+    .header-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text-main);
+    }
 
-        .sidebar.active {
-            left: 0;
-        }
+    .progress-badge {
+      font-size: 0.85rem;
+      background-color: var(--border-color);
+      padding: 4px 12px;
+      border-radius: 20px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
 
-        .sidebar h2 {
-            font-size: 18px;
-            margin-bottom: 15px;
-            color: var(--text-main);
-        }
+    /* Sidebar Menu */
+    .sidebar-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.2);
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+      z-index: 20;
+    }
 
-        .round-list {
-            list-style: none;
-        }
+    .sidebar-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
 
-        .round-item {
-            padding: 12px;
-            margin-bottom: 8px;
-            background-color: var(--primary-cream);
-            border-radius: 8px;
-            cursor: pointer;
-            transition: 0.2s;
-        }
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: -280px;
+      width: 280px;
+      height: 100%;
+      background-color: var(--card-bg);
+      box-shadow: 2px 0 15px rgba(0,0,0,0.1);
+      z-index: 30;
+      transition: left 0.3s ease;
+      display: flex;
+      flex-direction: column;
+    }
 
-        .round-item:hover {
-            background-color: var(--accent-cream);
-        }
+    .sidebar.active {
+      left: 0;
+    }
 
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.2);
-            display: none;
-            z-index: 90;
-        }
+    .sidebar-header {
+      padding: 20px;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
 
-        .overlay.active {
-            display: block;
-        }
+    .sidebar-menu {
+      overflow-y: auto;
+      flex: 1;
+      padding: 10px 0;
+    }
 
-        /* Container & Flashcard Flip Animation */
-        .container {
-            width: 100%;
-            max-width: 400px;
-            margin-top: 40px;
-            padding: 0 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+    .round-item {
+      padding: 14px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      transition: background 0.2s;
+      font-size: 0.95rem;
+      color: var(--text-main);
+    }
 
-        .card-container {
-            width: 100%;
-            height: 380px;
-            perspective: 1000px;
-            cursor: pointer;
-        }
+    .round-item:hover, .round-item.active {
+      background-color: var(--bg-color);
+      color: var(--accent-color);
+      font-weight: 600;
+    }
 
-        .card {
-            width: 100%;
-            height: 100%;
-            position: relative;
-            transform-style: preserve-3d;
-            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-        }
+    /* Main Container */
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      width: 100%;
+      max-width: 450px;
+    }
 
-        .card.flipped {
-            transform: rotateY(180deg);
-        }
+    .hint-text {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 15px;
+    }
 
-        .card-face {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            backface-visibility: hidden;
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            box-shadow: var(--shadow);
-            padding: 25px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            align-items: center;
-            text-align: center;
-        }
+    /* Flashcard Flip Container */
+    .card-container {
+      width: 100%;
+      height: 380px;
+      perspective: 1000px;
+      cursor: pointer;
+    }
 
-        /* ด้านหลังการ์ด */
-        .card-back {
-            transform: rotateY(180deg);
-            background-color: var(--primary-cream);
-        }
+    .card {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+    }
 
-        /* Card Content Styles */
-        .word-main {
-            font-size: 36px;
-            font-weight: bold;
-            margin-top: 40px;
-            color: var(--text-main);
-        }
+    .card.flipped {
+      transform: rotateY(180deg);
+    }
 
-        .part-of-speech {
-            font-size: 14px;
-            color: var(--text-sub);
-            font-style: italic;
-            background-color: var(--primary-cream);
-            padding: 4px 12px;
-            border-radius: 12px;
-        }
+    .card-face {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: 24px;
+      border: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      padding: 30px 24px;
+      text-align: center;
+      box-sizing: border-box;
+    }
 
-        .meaning {
-            font-size: 24px;
-            font-weight: 600;
-            color: var(--text-main);
-        }
+    /* Card Front */
+    .card-front {
+      background-color: var(--card-bg);
+    }
 
-        .example-box {
-            margin: 10px 0;
-        }
+    .card-content-center {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      gap: 12px;
+    }
 
-        .example-es {
-            font-size: 15px;
-            font-weight: 500;
-            margin-bottom: 4px;
-        }
+    .word-es {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--text-main);
+      letter-spacing: -0.5px;
+    }
 
-        .example-th {
-            font-size: 13px;
-            color: var(--text-sub);
-        }
+    .part-of-speech {
+      font-size: 0.95rem;
+      color: var(--accent-color);
+      font-style: italic;
+      background-color: #F7F3EE;
+      padding: 4px 14px;
+      border-radius: 12px;
+      font-weight: 500;
+    }
 
-        /* Speech Buttons */
-        .audio-btn {
-            background-color: #FFFFFF;
-            border: 1px solid var(--border-color);
-            border-radius: 50%;
-            width: 44px;
-            height: 44px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: 0.2s;
-        }
+    /* Card Back */
+    .card-back {
+      background-color: var(--card-back-bg);
+      transform: rotateY(180deg);
+    }
 
-        .audio-btn:hover {
-            background-color: var(--accent-cream);
-        }
+    .translation-th {
+      font-size: 1.8rem;
+      font-weight: 600;
+      color: var(--text-main);
+      margin-bottom: 15px;
+    }
 
-        /* Controller Buttons */
-        .controls {
-            display: flex;
-            gap: 15px;
-            width: 100%;
-            margin-top: 30px;
-        }
+    .example-box {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      padding: 16px;
+      border-radius: 16px;
+      width: 100%;
+      text-align: left;
+    }
 
-        .btn {
-            flex: 1;
-            padding: 14px;
-            border: none;
-            border-radius: 10px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.2s;
-        }
+    .example-es {
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--text-main);
+      margin-bottom: 6px;
+      line-height: 1.4;
+    }
 
-        .btn-pass {
-            background-color: var(--primary-cream);
-            color: var(--text-main);
-            border: 1px solid var(--border-color);
-        }
+    .example-th {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
 
-        .btn-pass:hover {
-            background-color: var(--accent-cream);
-        }
+    /* Audio Buttons */
+    .audio-btn {
+      background: none;
+      border: 1px solid var(--border-color);
+      border-radius: 50%;
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: var(--text-main);
+      margin-top: 8px;
+    }
 
-        .btn-remember {
-            background-color: #4A4A4A;
-            color: #FFFFFF;
-        }
+    .audio-btn:hover {
+      background-color: var(--bg-color);
+      border-color: var(--accent-color);
+      color: var(--accent-color);
+    }
 
-        .btn-remember:hover {
-            background-color: #222222;
-        }
+    /* Action Buttons */
+    .controls {
+      display: flex;
+      gap: 16px;
+      width: 100%;
+      margin-top: 25px;
+    }
 
-        .hint-text {
-            margin-top: 15px;
-            font-size: 12px;
-            color: var(--text-sub);
-        }
-    </style>
+    .btn {
+      flex: 1;
+      padding: 16px 0;
+      border: none;
+      border-radius: 16px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    }
+
+    .btn-again {
+      background-color: #FDE8E3;
+      color: var(--orange-btn);
+    }
+
+    .btn-again:hover {
+      background-color: #FAD4CB;
+    }
+
+    .btn-remember {
+      background-color: #E2ECE9;
+      color: var(--green-btn);
+    }
+
+    .btn-remember:hover {
+      background-color: #C8DDD7;
+    }
+
+    /* Finished View */
+    .finished-state {
+      display: none;
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    .finished-state h2 {
+      font-size: 1.8rem;
+      margin-bottom: 10px;
+      color: var(--text-main);
+    }
+
+    .finished-state p {
+      color: var(--text-muted);
+      margin-bottom: 24px;
+    }
+
+    .btn-restart {
+      background-color: var(--accent-color);
+      color: white;
+      padding: 14px 28px;
+      border-radius: 14px;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    .btn-restart:hover {
+      background-color: var(--accent-hover);
+    }
+  </style>
 </head>
 <body>
 
-    <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+  <!-- Header Section -->
+  <header>
+    <button class="menu-btn" id="menuBtn" aria-label="Open Menu">
+      <div></div>
+      <div></div>
+      <div></div>
+    </button>
+    <div class="header-title" id="roundTitle">รอบที่ 1</div>
+    <div class="progress-badge" id="progressBadge">1 / 50</div>
+  </header>
 
-    <div class="sidebar" id="sidebar">
-        <h2>เลือกรอบการเรียนรู้</h2>
-        <ul class="round-list" id="roundList"></ul>
+  <!-- Sidebar Overlay & Menu -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">เลือกเลเวล / รอบ</div>
+    <div class="sidebar-menu" id="sidebarMenu">
+      <!-- Rounds 1 to 20 generated dynamically -->
     </div>
+  </aside>
 
-    <header>
-        <button class="menu-btn" onclick="toggleSidebar()">&#9776;</button>
-        <div class="round-title" id="currentRoundTitle">รอบที่ 1</div>
-    </header>
+  <!-- Main Content -->
+  <main>
+    <div class="hint-text">แตะที่การ์ดเพื่อพลิกดูคำแปล</div>
 
-    <div class="container">
-        <div class="card-container" onclick="flipCard()">
-            <div class="card" id="flashcard">
-                <!-- หน้าแรก -->
-                <div class="card-face card-front">
-                    <div class="word-main" id="frontWord">Hola</div>
-                    <div class="part-of-speech" id="frontPos">interjection</div>
-                    <button class="audio-btn" onclick="speakCurrent(event, 'word')">🔊</button>
-                </div>
-                <!-- หน้าที่สอง -->
-                <div class="card-face card-back">
-                    <div class="meaning" id="backTranslation">สวัสดี</div>
-                    <div class="example-box">
-                        <div class="example-es" id="backExampleEs">¡Hola! ¿Cómo estás?</div>
-                        <div class="example-th" id="backExampleTh">สวัสดี! คุณสบายดีไหม?</div>
-                    </div>
-                    <button class="audio-btn" onclick="speakCurrent(event, 'example')">🔊</button>
-                </div>
-            </div>
+    <!-- Active Card View -->
+    <div class="card-container" id="cardContainer">
+      <div class="card" id="card">
+        
+        <!-- CARD FRONT -->
+        <div class="card-face card-front">
+          <div class="card-content-center">
+            <div class="word-es" id="frontWord">Hola</div>
+            <div class="part-of-speech" id="frontPos">คำทักทาย</div>
+          </div>
+          <button class="audio-btn" onclick="event.stopPropagation(); speakText(document.getElementById('frontWord').innerText)">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+          </button>
         </div>
 
-        <div class="controls">
-            <button class="btn btn-pass" onclick="handlePass()">ผ่าน (ทบทวนซ้ำ)</button>
-            <button class="btn btn-remember" onclick="handleRemember()">จำได้</button>
+        <!-- CARD BACK -->
+        <div class="card-face card-back">
+          <div class="translation-th" id="backTranslation">สวัสดี</div>
+          <div class="example-box">
+            <div class="example-es" id="backExampleEs">¡Hola! ¿Cómo estás?</div>
+            <div class="example-th" id="backExampleTh">สวัสดี! คุณเป็นอย่างไรบ้าง?</div>
+          </div>
+          <button class="audio-btn" onclick="event.stopPropagation(); speakText(document.getElementById('backExampleEs').innerText)">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+          </button>
         </div>
-        <div class="hint-text">แตะที่การ์ดเพื่อพลิกดูคำแปล</div>
+
+      </div>
     </div>
 
-    <script>
-        // ข้อมูลตัวอย่าง 80 คำ (20 รอบ รอบละ 50 คำ)
-        const sampleData = [
-            // รอบที่ 1
-            { es: "Hola", pos: "interjection", th: "สวัสดี", exEs: "¡Hola! ¿Cómo estás?", exTh: "สวัสดี! คุณสบายดีไหม?" },
-            { es: "Gracias", pos: "noun", th: "ขอบคุณ", exEs: "Muchas gracias por tu ayuda.", exTh: "ขอบคุณมากสำหรับความช่วยเหลือของคุณ" },
-            { es: "Amigo", pos: "noun", th: "เพื่อน", exEs: "Él es mi mejor amigo.", exTh: "เขาคือเพื่อนที่ดีที่สุดของฉัน" },
-            { es: "Comer", pos: "verb", th: "กิน", exEs: "Quiero comer una manzana.", exTh: "ฉันอยากกินแอปเปิ้ลหนึ่งลูก" },
-            { es: "Agua", pos: "noun", th: "น้ำ", exEs: "Necesito beber agua.", exTh: "ฉันจำเป็นต้องดื่มน้ำ" },
-            { es: "Casa", pos: "noun", th: "บ้าน", exEs: "Mi casa es grande.", exTh: "บ้านของฉันใหญ่" },
-            { es: "Feliz", pos: "adjective", th: "มีความสุข", exEs: "Hoy me siento feliz.", exTh: "วันนี้ฉันรู้สึกมีความสุข" },
-            { es: "Hablar", pos: "verb", th: "พูด", exEs: "Me gusta hablar español.", exTh: "ฉันชอบพูดภาษาสเปน" },
-            { es: "Sol", pos: "noun", th: "ดวงอาทิตย์", exEs: "El sol brilla hoy.", exTh: "วันนี้ดวงอาทิตย์ส่องแสง" },
-            { es: "Luna", pos: "noun", th: "ดวงจันทร์", exEs: "La luna está llena.", exTh: "ดวงจันทร์เต็มดวง" },
-            { es: "Tiempo", pos: "noun", th: "เวลา", exEs: "No tengo mucho tiempo.", exTh: "ฉันไม่มีเวลามากนัก" },
-            { es: "Trabajo", pos: "noun", th: "งาน", exEs: "Tengo mucho trabajo.", exTh: "ฉันมีงานเยอะ" },
-            { es: "Familia", pos: "noun", th: "ครอบครัว", exEs: "Amo a mi familia.", exTh: "ฉันรักครอบครัวของฉัน" },
-            { es: "Ciudad", pos: "noun", th: "เมือง", exEs: "Esta ciudad es hermosa.", exTh: "เมืองนี้สวยงาม" },
-            { es: "País", pos: "noun", th: "ประเทศ", exEs: "Mi país es cálido.", exTh: "ประเทศของฉันอบอุ่น" },
-            { es: "Libro", pos: "noun", th: "หนังสือ", exEs: "Leo un libro nuevo.", exTh: "ฉันอ่านหนังสือเล่มใหม่" },
-            { es: "Escuela", pos: "noun", th: "โรงเรียน", exEs: "Los niños van a la escuela.", exTh: "เด็กๆ ไปโรงเรียน" },
-            { es: "Profesor", pos: "noun", th: "ครู", exEs: "El profesor explica la lección.", exTh: "ครูอธิบายบทเรียน" },
-            { es: "Estudiante", pos: "noun", th: "นักเรียน", exEs: "Soy un estudiante dedicado.", exTh: "ฉันเป็นนักเรียนที่ตั้งใจ" },
-            { es: "Música", pos: "noun", th: "ดนตรี", exEs: "Escucho música todos los días.", exTh: "ฉันฟังเพลงทุกวัน" },
-            { es: "Comida", pos: "noun", th: "อาหาร", exEs: "La comida está deliciosa.", exTh: "อาหารอร่อยมาก" },
-            { es: "Café", pos: "noun", th: "กาแฟ", exEs: "Tomo café por la mañana.", exTh: "ฉันดื่มกาแฟตอนเช้า" },
-            { es: "Pan", pos: "noun", th: "ขนมปัง", es: "Compro pan fresco.", exTh: "ฉันซื้อขนมปังสดใหม่" },
-            { es: "Noche", pos: "noun", th: "กลางคืน", exEs: "La noche está tranquila.", exTh: "ค่ำคืนนี้เงียบสงบ" },
-            { es: "Día", pos: "noun", th: "วัน", exEs: "Hoy es un gran día.", exTh: "วันนี้เป็นวันที่ยิ่งใหญ่" },
-            { es: "Ayer", pos: "adverb", th: "เมื่อวาน", exEs: "Ayer fui al parque.", exTh: "เมื่อวานฉันไปสวนสาธารณะ" },
-            { es: "Hoy", pos: "adverb", th: "วันนี้", exEs: "Hoy tengo examen.", exTh: "วันนี้ฉันมีการสอบ" },
-            { es: "Mañana", pos: "adverb", th: "พรุ่งนี้", exEs: "Mañana te llamo.", exTh: "พรุ่งนี้ฉันจะโทรหาคุณ" },
-            { es: "Siempre", pos: "adverb", th: "เสมอ", exEs: "Siempre te recordaré.", exTh: "ฉันจะจดจำคุณเสมอ" },
-            { es: "Nunca", pos: "adverb", th: "ไม่เคย", exEs: "Nunca me rindo.", exTh: "ฉันไม่เคยยอมแพ้" },
-            { es: "Gran", pos: "adjective", th: "ใหญ่/ยิ่งใหญ่", exEs: "Es una gran persona.", exTh: "เขาเป็นคนที่ยิ่งใหญ่" },
-            { es: "Poco", pos: "adjective", th: "นิดหน่อย", exEs: "Tengo poco dinero.", exTh: "ฉันมีเงินนิดหน่อย" },
-            { es: "Mucho", pos: "adjective", th: "มาก", exEs: "Hace mucho calor.", exTh: "อากาศร้อนมาก" },
-            { es: "Bueno", pos: "adjective", th: "ดี", exEs: "Es un buen amigo.", exTh: "เขาเป็นเพื่อนที่ดี" },
-            { es: "Malo", pos: "adjective", th: "แย่", exEs: "El clima está malo.", exTh: "สภาพอากาศแย่มาก" },
-            { es: "Grande", pos: "adjective", th: "ใหญ่", exEs: "La mesa es grande.", exTh: "โต๊ะตัวใหญ่" },
-            { es: "Pequeño", pos: "adjective", th: "เล็ก", exEs: "El perro es pequeño.", exTh: "สุนัขตัวเล็ก" },
-            { es: "Rápido", pos: "adjective", th: "เร็ว", exEs: "El coche es rápido.", exTh: "รถคันนี้เร็ว" },
-            { es: "Lento", pos: "adjective", th: "ช้า", exEs: "El tráfico está lento.", exTh: "การจราจรช้า" },
-            { es: "Fácil", pos: "adjective", th: "ง่าย", exEs: "La tarea es fácil.", exTh: "การบ้านง่าย" },
-            { es: "Difícil", pos: "adjective", th: "ยาก", exEs: "El problema es difícil.", exTh: "ปัญหานี้ยาก" },
-            { es: "Nuevo", pos: "adjective", th: "ใหม่", exEs: "Tengo un teléfono nuevo.", exTh: "ฉันมีโทรศัพท์ใหม่" },
-            { es: "Viejo", pos: "adjective", th: "เก่า", exEs: "El reloj es viejo.", exTh: "นาฬิกาเล่มนี้เก่า" },
-            { es: "Joven", pos: "adjective", th: "หนุ่มสาว", exEs: "Ella es muy joven.", exTh: "เธออายุยังน้อยมาก" },
-            { es: "Alto", pos: "adjective", th: "สูง", exEs: "El árbol es alto.", exTh: "ต้นไม้ต้นนี้สูง" },
-            { es: "Bajo", pos: "adjective", th: "เตี้ย", exEs: "Mi hermano es bajo.", exTh: "น้องชายของฉันตัวเตี้ย" },
-            { es: "Amable", pos: "adjective", th: "ใจดี", exEs: "La Sra. María es amable.", exTh: "คุณมาเรียใจดี" },
-            { es: "Cansado", pos: "adjective", th: "เหนื่อย", exEs: "Estoy muy cansado.", exTh: "ฉันเหนื่อยมาก" },
-            { es: "Triste", pos: "adjective", th: "เศร้า", exEs: "No estés triste.", exTh: "อย่าเศร้าเลย" },
-            { es: "Lindo", pos: "adjective", th: "น่ารัก", exEs: "Qué lindo gato.", exTh: "แมวน่ารักจัง" },
-            // รอบที่ 2
-            { es: "Agua", pos: "noun", th: "น้ำ", exEs: "Necesito beber agua.", exTh: "ฉันจำเป็นต้องดื่มน้ำ" },
-            { es: "Casa", pos: "noun", th: "บ้าน", exEs: "Mi casa es grande.", exTh: "บ้านของฉันใหญ่" },
-            { es: "Feliz", pos: "adjective", th: "มีความสุข", exEs: "Hoy me siento feliz.", exTh: "วันนี้ฉันรู้สึกมีความสุข" },
-            { es: "Hablar", pos: "verb", th: "พูด", exEs: "Me gusta hablar español.", exTh: "ฉันชอบพูดภาษาสเปน" }
-        ];
+    <!-- Finished State Screen -->
+    <div class="finished-state" id="finishedState">
+      <h2>🎉 ยินดีด้วย!</h2>
+      <p>คุณทบทวนคำศัพท์ในรอบนี้ครบถ้วนแล้ว</p>
+      <button class="btn-restart" onclick="resetCurrentRound()">เริ่มทบทวนรอบนี้ใหม่</button>
+    </div>
 
-        // เติมข้อมูลจำลองให้ครบ 20 รอบ (รอบละ 50 คำ)
-        for (let i = 9; i <= 80; i++) {
-            sampleData.push({
-                es: `Palabra ${i}`,
-                pos: "sustantivo",
-                th: `คำศัพท์ที่ ${i}`,
-                exEs: `Esta es la frase de ejemplo ${i}.`,
-                exTh: `นี่คือประโยคตัวอย่างที่ ${i}`
-            });
-        }
+    <!-- Controls -->
+    <div class="controls" id="controls">
+      <button class="btn btn-again" onclick="handleAnswer(false)">
+        ยังจำไม่ได้
+      </button>
+      <button class="btn btn-remember" onclick="handleAnswer(true)">
+        จำได้
+      </button>
+    </div>
+  </main>
 
-        let roundsData = {};
-        for (let r = 1; r <= 20; r++) {
-            roundsData[r] = sampleData.slice((r - 1) * 4, r * 4);
-        }
+  <script>
+    // ตัวอย่างฐานข้อมูลคำศัพท์สเปน (สร้างคลังคำศัพท์ตัวอย่างสำหรับ 20 รอบ)
+    const baseVocabulary = [
+      { es: "Hola", pos: "คำทักทาย", th: "สวัสดี", exEs: "¡Hola! ¿Cómo estás?", exTh: "สวัสดี! คุณเป็นอย่างไรบ้าง?" },
+      { es: "Gracias", pos: "คำนาม", th: "ขอบคุณ", exEs: "Muchas gracias por tu ayuda.", exTh: "ขอบคุณมากสำหรับความช่วยเหลือของคุณ" },
+      { es: "Por favor", pos: "วลี", th: "ได้โปรด / กรุณา", exEs: "Un café, por favor.", exTh: "ขอกาแฟหนึ่งแก้วครับ/ค่ะ" },
+      { es: "Amigo", pos: "คำนาม (m.)", th: "เพื่อน", exEs: "Él es mi mejor amigo.", exTh: "เขาคือเพื่อนสนิทของฉัน" },
+      { es: "Comer", pos: "คำกริยา", th: "กิน / ทาน", exEs: "Vamos a comer juntos.", exTh: "พวกเราไปกินข้าวด้วยกันเถอะ" },
+      { es: "Casa", pos: "คำนาม (f.)", th: "บ้าน", exEs: "Mi casa es muy grande.", exTh: "บ้านของฉันใหญ่มาก" },
+      { es: "Sol", pos: "คำนาม (m.)", th: "พระอาทิตย์", exEs: "El sol brilla hoy.", exTh: "วันนี้พระอาทิตย์ส่องแสงเจิดจ้า" },
+      { es: "Agua", pos: "คำนาม (f.)", th: "น้ำ", exEs: "Quiero beber agua.", exTh: "ฉันอยากดื่มน้ำ" },
+      { es: "Tiempo", pos: "คำนาม (m.)", th: "เวลา / อากาศ", exEs: "No tengo mucho tiempo.", exTh: "ฉันไม่มีเวลามากนัก" },
+      { es: "Feliz", pos: "คำคุณศัพท์", th: "มีความสุข", exEs: "Estoy muy feliz hoy.", exTh: "วันนี้ฉันมีความสุขมาก" }
+    ];
 
-        let currentRound = 1;
-        let currentQueue = [];
-        let currentIndex = 0;
+    // จำลองสร้างคำศัพท์รอบละ 50 คำ รวม 20 รอบ (1,000 คำ)
+    const roundsData = {};
+    for (let r = 1; r <= 20; r++) {
+      roundsData[r] = [];
+      for (let i = 1; i <= 50; i++) {
+        const sampleIndex = (i - 1) % baseVocabulary.length;
+        const item = baseVocabulary[sampleIndex];
+        roundsData[r].push({
+          id: `${r}-${i}`,
+          es: `${item.es} ${r > 1 ? '(' + r + ')' : ''}`, // ตกแต่งเพื่อความแตกต่างในแต่ละรอบ
+          pos: item.pos,
+          th: item.th,
+          exEs: item.exEs,
+          exTh: item.exTh
+        });
+      }
+    }
 
-        // Initialize UI Elements
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('overlay');
-        const roundList = document.getElementById('roundList');
-        const flashcard = document.getElementById('flashcard');
+    // State Variables
+    let currentRound = 1;
+    let currentQueue = [];
+    let initialTotal = 50;
 
-        // สร้างเมนู sidebar เลือก รอบที่ 1 - 20
-        for (let i = 1; i <= 20; i++) {
-            const li = document.createElement('li');
-            li.className = 'round-item';
-            li.innerText = `รอบที่ ${i}`;
-            li.onclick = () => selectRound(i);
-            roundList.appendChild(li);
-        }
+    // DOM Elements
+    const cardContainer = document.getElementById('cardContainer');
+    const card = document.getElementById('card');
+    const frontWord = document.getElementById('frontWord');
+    const frontPos = document.getElementById('frontPos');
+    const backTranslation = document.getElementById('backTranslation');
+    const backExampleEs = document.getElementById('backExampleEs');
+    const backExampleTh = document.getElementById('backExampleTh');
+    const roundTitle = document.getElementById('roundTitle');
+    const progressBadge = document.getElementById('progressBadge');
+    const finishedState = document.getElementById('finishedState');
+    const controls = document.getElementById('controls');
+    const sidebar = document.getElementById('sidebar');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
+    const menuBtn = document.getElementById('menuBtn');
+    const sidebarMenu = document.getElementById('sidebarMenu');
 
-        function toggleSidebar() {
-            sidebar.classList.toggle('active');
-            overlay.classList.toggle('active');
-        }
+    // Initialize Menu
+    function initSidebar() {
+      sidebarMenu.innerHTML = '';
+      for (let i = 1; i <= 20; i++) {
+        const div = document.createElement('div');
+        div.className = `round-item ${i === currentRound ? 'active' : ''}`;
+        div.innerText = `รอบที่ ${i}`;
+        div.onclick = () => selectRound(i);
+        sidebarMenu.appendChild(div);
+      }
+    }
 
-        function selectRound(roundNum) {
-            currentRound = roundNum;
-            currentQueue = [...roundsData[roundNum]];
-            currentIndex = 0;
-            document.getElementById('currentRoundTitle').innerText = `รอบที่ ${currentRound}`;
-            toggleSidebar();
-            renderCard();
-        }
+    // Toggle Sidebar
+    menuBtn.onclick = () => {
+      sidebar.classList.add('active');
+      sidebarOverlay.classList.add('active');
+    };
 
-        function renderCard() {
-            flashcard.classList.remove('flipped');
-            if (currentQueue.length === 0) {
-                document.getElementById('frontWord').innerText = "จบการฝึก!";
-                document.getElementById('frontPos').innerText = "-";
-                return;
-            }
-            
-            const item = currentQueue[currentIndex];
-            document.getElementById('frontWord').innerText = item.es;
-            document.getElementById('frontPos').innerText = item.pos;
-            document.getElementById('backTranslation').innerText = item.th;
-            document.getElementById('backExampleEs').innerText = item.exEs;
-            document.getElementById('backExampleTh').innerText = item.exTh;
-        }
+    sidebarOverlay.onclick = () => {
+      sidebar.classList.remove('active');
+      sidebarOverlay.classList.remove('active');
+    };
 
-        function flipCard() {
-            flashcard.classList.toggle('flipped');
-        }
+    // Flip Card logic
+    cardContainer.onclick = () => {
+      card.classList.toggle('flipped');
+    };
 
-        function speakCurrent(event, type) {
-            event.stopPropagation(); // ป้องกันไม่ให้แตะการ์ดแล้วพลิก
-            if (currentQueue.length === 0) return;
-            
-            const item = currentQueue[currentIndex];
-            const text = type === 'word' ? item.es : item.exEs;
-            
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = 'es-ES'; // ตั้งค่าเป็นภาษาสเปน
-            window.speechSynthesis.speak(utterance);
-        }
+    // Load selected Round
+    function selectRound(roundNum) {
+      currentRound = roundNum;
+      roundTitle.innerText = `รอบที่ ${roundNum}`;
+      sidebar.classList.remove('active');
+      sidebarOverlay.classList.remove('active');
+      
+      initSidebar();
+      resetCurrentRound();
+    }
 
-        function handleRemember() {
-            if (currentQueue.length === 0) return;
-            // ตัดคำที่จำได้ออกจากคิว
-            currentQueue.splice(currentIndex, 1);
-            if (currentIndex >= currentQueue.length) {
-                currentIndex = 0;
-            }
-            renderCard();
-        }
+    function resetCurrentRound() {
+      // โคลนอาร์เรย์คำศัพท์ประจำรอบ
+      currentQueue = [...roundsData[currentRound]];
+      initialTotal = currentQueue.length;
+      
+      cardContainer.style.display = 'block';
+      controls.style.display = 'flex';
+      finishedState.style.display = 'none';
 
-        function handlePass() {
-            if (currentQueue.length === 0) return;
-            // กดผ่าน -> วนคำนี้ไปอยู่ท้ายคิวเพื่อฝึกซ้ำ
-            currentIndex = (currentIndex + 1) % currentQueue.length;
-            renderCard();
-        }
+      renderCard();
+    }
 
-        // เริ่มต้นโหลดรอบที่ 1
-        selectRound(1);
-    </script>
+    // Render Current Card
+    function renderCard() {
+      card.classList.remove('flipped');
+      
+      if (currentQueue.length === 0) {
+        showFinishedView();
+        return;
+      }
+
+      const currentCard = currentQueue[0];
+      
+      // ให้เวลานิเมชันพลิกกลับเข้าที่ก่อนเปลี่ยนข้อความ
+      setTimeout(() => {
+        frontWord.innerText = currentCard.es;
+        frontPos.innerText = currentCard.pos;
+        backTranslation.innerText = currentCard.th;
+        backExampleEs.innerText = currentCard.exEs;
+        backExampleTh.innerText = currentCard.exTh;
+      }, 150);
+
+      updateProgress();
+    }
+
+    function updateProgress() {
+      const remaining = currentQueue.length;
+      const completed = initialTotal - remaining + 1;
+      progressBadge.innerText = `${completed} / ${initialTotal} (เหลือวน ${remaining})`;
+    }
+
+    // Handle User Answer Button Click
+    function handleAnswer(remembered) {
+      if (currentQueue.length === 0) return;
+
+      if (remembered) {
+        // ถ้ัาจำได้ ลบออกจากคิว
+        currentQueue.shift();
+      } else {
+        // ถ้าจำไม่ได้ นำคำปัจจุบันไปไว้ท้ายคิวเพื่อจำใหม่
+        const item = currentQueue.shift();
+        currentQueue.push(item);
+      }
+
+      renderCard();
+    }
+
+    function showFinishedView() {
+      cardContainer.style.display = 'none';
+      controls.style.display = 'none';
+      finishedState.style.display = 'block';
+      progressBadge.innerText = `${initialTotal} / ${initialTotal}`;
+    }
+
+    // Text to Speech Function (Spanish)
+    function speakText(text) {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel(); // หยุดเสียงเก่าก่อน
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'es-ES'; // ตั้งเป็นภาษาสเปน
+        utterance.rate = 0.9; // ความเร็วการพูดพอดีๆ
+        window.speechSynthesis.speak(utterance);
+      } else {
+        alert("เบราว์เซอร์ของคุณไม่รองรับระบบการอ่านออกเสียง");
+      }
+    }
+
+    // Initialize App
+    initSidebar();
+    resetCurrentRound();
+  </script>
 </body>
 </html>
