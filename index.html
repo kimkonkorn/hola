@@ -3,383 +3,302 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>แอพเรียนรู้คำศัพท์ภาษาสเปน - Spanish Flashcards</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome for Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>Spanish Flashcards</title>
     <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
         body {
-            font-family: 'Kanit', 'Poppins', sans-serif;
-            background-color: #f3f4f6;
+            background-color: #ffffff;
+            color: #111111;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
         }
-        .perspective-1000 {
-            perspective: 1000px;
+
+        .container {
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
         }
-        .transform-style-3d {
-            transform-style: preserve-3d;
+
+        .status-bar {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 20px;
+            letter-spacing: 0.5px;
         }
-        .backface-hidden {
-            backface-visibility: hidden;
+
+        .card {
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 40px 20px;
+            min-height: 280px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 25px;
+            background: #fff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+            transition: all 0.2s ease;
         }
-        .rotate-y-180 {
-            transform: rotateY(180deg);
+
+        .word {
+            font-size: 36px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .pos {
+            font-size: 14px;
+            color: #777;
+            font-style: italic;
+            margin-bottom: 20px;
+        }
+
+        .translation {
+            font-size: 24px;
+            font-weight: 500;
+            margin-bottom: 15px;
+            color: #222;
+        }
+
+        .sentence {
+            font-size: 16px;
+            color: #444;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .btn-audio {
+            background: none;
+            border: 1px solid #ccc;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 10px;
+            transition: background 0.2s;
+        }
+
+        .btn-audio:hover {
+            background: #f5f5f5;
+        }
+
+        .controls {
+            display: flex;
+            gap: 12px;
+        }
+
+        button.action-btn {
+            flex: 1;
+            padding: 14px;
+            border: 1px solid #111;
+            background: #fff;
+            color: #111;
+            font-size: 15px;
+            font-weight: 500;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        button.action-btn:hover {
+            background: #111;
+            color: #fff;
+        }
+
+        .flip-btn {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            background: #fafafa;
+            color: #333;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 12px;
+        }
+
+        .flip-btn:hover {
+            background: #f0f0f0;
+        }
+
+        .hidden {
+            display: none !important;
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between text-gray-800">
+<body>
 
-    <!-- Header Navigation -->
-    <header class="bg-indigo-600 text-white shadow-md">
-        <div class="max-w-4xl mx-auto px-4 py-4 flex flex-wrap justify-between items-center gap-4">
-            <div class="flex items-center space-x-3">
-                <i class="fa-solid fa-[#FFC400] fa-layer-group text-2xl"></i>
-                <h1 class="text-xl font-bold tracking-wide">Spanish Vocab Master</h1>
-            </div>
-            
-            <!-- Round / Batch Selector -->
-            <div class="flex items-center space-x-2 bg-indigo-700 px-3 py-1.5 rounded-lg border border-indigo-500">
-                <label for="roundSelect" class="text-sm text-indigo-100 font-medium">รอบที่:</label>
-                <select id="roundSelect" class="bg-indigo-800 text-white text-sm rounded border border-indigo-400 focus:outline-none focus:ring-2 focus:ring-yellow-400 px-2 py-1 cursor-pointer">
-                    <!-- Options populated dynamically -->
-                </select>
-            </div>
-        </div>
-    </header>
+<div class="container">
+    <div class="status-bar" id="statusBar">รอบที่ 1/20 | คำที่ 1/4</div>
 
-    <!-- Main Content Container -->
-    <main class="max-w-2xl mx-auto px-4 py-8 w-full flex-grow flex flex-col justify-center">
+    <!-- หน้าที่ 1: หน้าคำศัพท์ -->
+    <div id="cardFront" class="card">
+        <div class="word" id="frontWord">Hola</div>
+        <div class="pos" id="frontPos">interjection</div>
+        <button class="btn-audio" onclick="speakCurrentWord()" title="ฟังเสียง">🔊</button>
+    </div>
 
-        <!-- Progress Bar and Info -->
-        <div class="mb-6">
-            <div class="flex justify-between items-center mb-2 text-sm font-medium text-gray-600">
-                <span id="roundProgressText">รอบที่ 1 (คำที่ 1 - 10)</span>
-                <span id="cardCounter" class="text-indigo-600 font-bold">1 / 10</span>
-            </div>
-            <div class="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden shadow-inner">
-                <div id="progressBar" class="bg-indigo-600 h-2.5 rounded-full transition-all duration-300" style="width: 10%"></div>
-            </div>
-        </div>
+    <!-- หน้าที่ 2: หน้าคำแปลและประโยคตัวอย่าง -->
+    <div id="cardBack" class="card hidden">
+        <div class="translation" id="backTranslation">สวัสดี</div>
+        <div class="sentence" id="backSentence">¡Hola! ¿Cómo estás?</div>
+        <button class="btn-audio" onclick="speakCurrentSentence()" title="ฟังเสียงประโยค">🔊</button>
+    </div>
 
-        <!-- Flashcard Flip Container -->
-        <div class="perspective-1000 w-full h-[380px] sm:h-[420px] cursor-pointer group" id="flashcardContainer" onclick="flipCard()">
-            <div id="flashcard" class="relative w-full h-full duration-500 transform-style-3d shadow-xl rounded-2xl">
-                
-                <!-- Front Side -->
-                <div class="absolute w-full h-full backface-hidden bg-white border-2 border-indigo-100 rounded-2xl p-8 flex flex-col justify-between items-center text-center shadow-sm hover:border-indigo-300 transition-all">
-                    <div class="w-full flex justify-between items-center">
-                        <span class="text-xs font-bold uppercase tracking-wider text-indigo-500 bg-indigo-50 px-3 py-1 rounded-full border border-indigo-100">
-                            หน้า 1: คำศัพท์
-                        </span>
-                        <span id="posFront" class="text-xs font-semibold px-2.5 py-1 rounded bg-amber-100 text-amber-800">
-                            noun
-                        </span>
-                    </div>
+    <button class="flip-btn" id="flipBtn" onclick="toggleCard()">สลับดูคำแปล / คำศัพท์</button>
 
-                    <div class="my-auto py-4">
-                        <h2 id="vocabFront" class="text-4xl sm:text-5xl font-extrabold text-gray-800 mb-3 tracking-tight">
-                            Hola
-                        </h2>
-                        <p id="posLabel" class="text-sm font-medium text-gray-500 italic">
-                            ( noun )
-                        </p>
-                    </div>
+    <div class="controls">
+        <button class="action-btn" onclick="handlePass()">ข้าม (ยังจำไม่ได้)</button>
+        <button class="action-btn" onclick="handleRemember()">จำได้แล้ว</button>
+    </div>
+</div>
 
-                    <!-- Audio Button Front -->
-                    <div class="w-full flex justify-between items-center border-t border-gray-100 pt-4">
-                        <button onclick="event.stopPropagation(); speakText(wordsData[currentIndex].word)" 
-                                class="flex items-center space-x-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-4 py-2 rounded-xl transition-all font-medium text-sm border border-indigo-200 active:scale-95">
-                            <i class="fa-solid fa-volume-high text-indigo-600"></i>
-                            <span>ฟังเสียงอ่าน</span>
-                        </button>
+<script>
+    // คลังคำศัพท์ตัวอย่าง (สามารถเพิ่มจนครบ 80 คำสำหรับ 20 รอบได้)
+    const masterVocabulary = [
+        // รอบที่ 1
+        { word: "Hola", pos: "interjection", translation: "สวัสดี", sentence: "¡Hola! ¿Cómo estás?" },
+        { word: "Gracias", pos: "interjection", translation: "ขอบคุณ", sentence: "Muchas gracias por tu ayuda." },
+        { word: "Amigo", pos: "noun", translation: "เพื่อน", sentence: "Él es mi mejor amigo." },
+        { word: "Comer", pos: "verb", translation: "กิน", sentence: "Quiero comer una manzana." },
+        // รอบที่ 2
+        { word: "Agua", pos: "noun", translation: "น้ำ", sentence: "Necesito beber agua." },
+        { word: "Casa", pos: "noun", translation: "บ้าน", sentence: "Mi casa es muy grande." },
+        { word: "Hablar", pos: "verb", translation: "พูด", sentence: "Me gusta hablar español." },
+        { word: "Libro", pos: "noun", translation: "หนังสือ", sentence: "Estoy leyendo un libro interesante." }
+    ];
 
-                        <span class="text-xs text-gray-400 flex items-center">
-                            คลิกเพื่อพลิกการ์ด <i class="fa-solid fa-[#FFC400] fa-rotate-right ml-1"></i>
-                        </span>
-                    </div>
-                </div>
+    let currentRound = 1;
+    const maxRounds = 20;
+    const wordsPerRound = 4;
+    
+    let currentQueue = [];
+    let currentIndex = 0;
+    let isFront = true;
 
-                <!-- Back Side -->
-                <div class="absolute w-full h-full backface-hidden rotate-y-180 bg-gradient-to-br from-indigo-900 to-slate-900 text-white border-2 border-indigo-700 rounded-2xl p-8 flex flex-col justify-between items-center text-center shadow-lg">
-                    <div class="w-full flex justify-between items-center">
-                        <span class="text-xs font-bold uppercase tracking-wider text-emerald-400 bg-emerald-950/60 px-3 py-1 rounded-full border border-emerald-800/50">
-                            หน้า 2: คำแปล & ประโยค
-                        </span>
-                        <span id="posBack" class="text-xs font-semibold px-2.5 py-1 rounded bg-indigo-800/80 text-indigo-200 border border-indigo-600">
-                            noun
-                        </span>
-                    </div>
+    // เริ่มต้นใช้งาน
+    function init() {
+        loadRoundWords();
+        showCard();
+    }
 
-                    <div class="my-auto py-2 w-full">
-                        <!-- Meaning -->
-                        <div class="mb-4">
-                            <span class="text-xs text-indigo-300 block mb-1">คำแปลภาษาไทย</span>
-                            <h3 id="meaningBack" class="text-2xl sm:text-3xl font-bold text-yellow-400">
-                                สวัสดี
-                            </h3>
-                        </div>
+    // ดึงคำศัพท์มาใช้ในแต่ละรอบ
+    function loadRoundWords() {
+        const startIndex = ((currentRound - 1) * wordsPerRound) % masterVocabulary.length;
+        currentQueue = masterVocabulary.slice(startIndex, startIndex + wordsPerRound);
+        currentIndex = 0;
+    }
 
-                        <hr class="border-indigo-800/60 my-3">
-
-                        <!-- Example Sentence -->
-                        <div class="bg-indigo-950/50 p-3.5 rounded-xl border border-indigo-800/40 text-left relative">
-                            <div class="flex justify-between items-center mb-1">
-                                <span class="text-xs font-semibold text-indigo-300">ตัวอย่างประโยค:</span>
-                                <button onclick="event.stopPropagation(); speakText(wordsData[currentIndex].sentence)" 
-                                        class="text-xs text-indigo-300 hover:text-white bg-indigo-800/60 hover:bg-indigo-700 px-2.5 py-1 rounded-lg transition-all flex items-center gap-1 border border-indigo-600/50">
-                                    <i class="fa-solid fa-volume-high text-yellow-400"></i>
-                                    <span>ฟังประโยค</span>
-                                </button>
-                            </div>
-                            <p id="sentenceEs" class="text-sm sm:text-base font-semibold text-white mb-1 tracking-wide">
-                                ¡Hola! ¿Cómo estás?
-                            </p>
-                            <p id="sentenceTh" class="text-xs sm:text-sm text-gray-300">
-                                สวัสดี! คุณเป็นอย่างไรบ้าง?
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="w-full flex justify-end items-center border-t border-indigo-800/60 pt-3">
-                        <span class="text-xs text-indigo-300 flex items-center">
-                            คลิกเพื่อกลับ <i class="fa-solid fa-rotate-left ml-1"></i>
-                        </span>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-
-        <!-- Controller Buttons -->
-        <div class="flex justify-between items-center gap-4 mt-8">
-            <button onclick="prevCard()" id="btnPrev" 
-                    class="flex-1 bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 font-semibold py-3 px-4 rounded-xl shadow-sm transition-all flex justify-center items-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed">
-                <i class="fa-solid fa-arrow-left"></i>
-                <span>ก่อนหน้า</span>
-            </button>
-
-            <button onclick="nextCard()" id="btnNext" 
-                    class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-4 rounded-xl shadow-md transition-all flex justify-center items-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed">
-                <span>ถัดไป</span>
-                <i class="fa-solid fa-arrow-right"></i>
-            </button>
-        </div>
-
-    </main>
-
-    <!-- Footer -->
-    <footer class="text-center py-4 text-xs text-gray-500 border-t border-gray-200 bg-white">
-         Spanish Flashcards Platform - บทเรียนละ 10 คำ (ชุดตัวอย่าง 50 คำแรกจาก 1,200 คำ)
-    </footer>
-
-    <!-- JavaScript Data and Logic -->
-    <script>
-        // Data 50 Words
-        const wordsData = [
-            { word: "el / la", pos: "article", meaning: "ผู้ / สิ่งนั้น (คำนำหน้านามชี้เฉพาะ)", sentence: "El libro está sobre la mesa.", sentenceTh: "หนังสืออยู่บนโต๊ะ" },
-            { word: "de", pos: "preposition", meaning: "ของ / จาก", sentence: "Un vaso de agua, por favor.", sentenceTh: "ขอน้ำสักแก้วครับ/ค่ะ" },
-            { word: "que", pos: "conjunction", meaning: "ว่า / ที่ / ผู้ซึ่ง", sentence: "Tengo que estudiar hoy.", sentenceTh: "ฉันต้องเรียนวันนี้" },
-            { word: "y", pos: "conjunction", meaning: "และ", sentence: "María y Juan son amigos.", sentenceTh: "มาเรียและฮวนเป็นเพื่อนกัน" },
-            { word: "en", pos: "preposition", meaning: "ใน / ที่ / บน", sentence: "Vivo en Madrid.", sentenceTh: "ฉันอาศัยอยู่ในมาดริด" },
-            { word: "un / una", pos: "article", meaning: "หนึ่ง (คำนำหน้านามไม่ชี้เฉพาะ)", sentence: "Quiero un café.", sentenceTh: "ฉันต้องการกาแฟหนึ่งแก้ว" },
-            { word: "ser", pos: "verb", meaning: "เป็น / อยู่ / คือ (ถาวร)", sentence: "Ella es doctora.", sentenceTh: "เธอเป็นหมอ" },
-            { word: "a", pos: "preposition", meaning: "ไปยัง / ถึง", sentence: "Voy a la escuela.", sentenceTh: "ฉันกำลังไปโรงเรียน" },
-            { word: "él / ella", pos: "pronoun", meaning: "เขา / เธอ", sentence: "Él habla español muy bien.", sentenceTh: "เขาพูดภาษาสเปนได้ดีมาก" },
-            { word: "haber", pos: "verb", meaning: "มี (กริยาช่วย)", sentence: "Hay muchas personas aquí.", sentenceTh: "มีคนมากมายที่นี่" },
-            
-            { word: "por", pos: "preposition", meaning: "โดย / เพราะ / ผ่าน", sentence: "Gracias por tu ayuda.", sentenceTh: "ขอบคุณสำหรับความช่วยเหลือของคุณ" },
-            { word: "con", pos: "preposition", meaning: "กับ / พร้อมด้วย", sentence: "Voy al cine con mi amigo.", sentenceTh: "ฉันไปโรงหนังกับเพื่อน" },
-            { word: "para", pos: "preposition", meaning: "เพื่อ / สำหรับ", sentence: "Este regalo es para ti.", sentenceTh: "ของขวัญชิ้นนี้สำหรับคุณ" },
-            { word: "mi", pos: "possessive", meaning: "ของฉัน", sentence: "Mi casa es grande.", sentenceTh: "บ้านของฉันใหญ่" },
-            { word: "estar", pos: "verb", meaning: "อยู่ / เป็น (ชั่วคราว/สถานที่)", sentence: "Estoy muy feliz hoy.", sentenceTh: "วันนี้ฉันมีความสุขมาก" },
-            { word: "tener", pos: "verb", meaning: "มี / อายุ", sentence: "Tengo dos hermanos.", sentenceTh: "ฉันมีพี่น้องสองคน" },
-            { word: "como", pos: "conjunction", meaning: "เหมือน / อย่าง / เช่น", sentence: "Hazlo como tú quieras.", sentenceTh: "ทำตามที่คุณต้องการได้เลย" },
-            { word: "más", pos: "adverb", meaning: "มากกว่า / เพิ่มขึ้น", sentence: "Necesito más tiempo.", sentenceTh: "ฉันต้องการเวลามากกว่านี้" },
-            { word: "pero", pos: "conjunction", meaning: "แต่", sentence: "Es caro, pero es bueno.", sentenceTh: "มันแพง แต่ว่ามันดี" },
-            { word: "su", pos: "possessive", meaning: "ของเขา / ของเธอ / ของคุณ", sentence: "Su perro es muy divertido.", sentenceTh: "สุนัขของเขาตลกมาก" },
-
-            { word: "o", pos: "conjunction", meaning: "หรือ", sentence: "¿Quieres té o café?", sentenceTh: "คุณต้องการชาหรือกาแฟ?" },
-            { word: "este / esta", pos: "demonstrative", meaning: "นี้ (สิ่งนี้/คนนี้)", sentence: "Este libro es interesante.", sentenceTh: "หนังสือเล่มนี้น่าสนใจ" },
-            { word: "mucho", pos: "adjective", meaning: "มาก / จำนวนมาก", sentence: "Muchas gracias.", sentenceTh: "ขอบคุณมาก" },
-            { word: "decir", pos: "verb", meaning: "พูด / บอก", sentence: "¿Qué quieres decir?", sentenceTh: "คุณต้องการจะบอกอะไร?" },
-            { word: "hacer", pos: "verb", meaning: "ทำ / สร้าง", sentence: "¿Qué haces hoy?", sentenceTh: "วันนี้คุณทำอะไร?" },
-            { word: "ir", pos: "verb", meaning: "ไป", sentence: "Vamos a la playa este fin de semana.", sentenceTh: "พวกเราไปชายหาดกันสุดสัปดาห์นี้" },
-            { word: "ver", pos: "verb", meaning: "เห็น / ดู", sentence: "Quiero ver una película.", sentenceTh: "ฉันอยากดูหนังเรื่องหนึ่ง" },
-            { word: "poder", pos: "verb", meaning: "สามารถ / อาจจะ", sentence: "¿Puedes ayudarme?", sentenceTh: "คุณช่วยฉันได้ไหม?" },
-            { word: "dar", pos: "verb", meaning: "ให้", sentence: "Dame la mano.", sentenceTh: "ยื่นมือของคุณมาให้ฉัน" },
-            { word: "saber", pos: "verb", meaning: "รู้ / ทราบ", sentence: "No sé la respuesta.", sentenceTh: "ฉันไม่รู้คำตอบ" },
-
-            { word: "sí", pos: "adverb", meaning: "ใช่ / ครับ / ค่ะ", sentence: "Sí, acepto la propuesta.", sentenceTh: "ใช่ ฉันตกลงตามข้อเสนอ" },
-            { word: "no", pos: "adverb", meaning: "ไม่", sentence: "No hablo francés.", sentenceTh: "ฉันไม่พูดภาษาฝรั่งเศส" },
-            { word: "todo / toda", pos: "pronoun", meaning: "ทั้งหมด / ทุกๆ", sentence: "Todo está listo para la fiesta.", sentenceTh: "ทุกอย่างพร้อมสำหรับงานปาร์ตี้แล้ว" },
-            { word: "bien", pos: "adverb", meaning: "ดี / สบายดี", sentence: "Todo va muy bien.", sentenceTh: "ทุกอย่างดำเนินไปด้วยดี" },
-            { word: "también", pos: "adverb", meaning: "ด้วย / เช่นกัน", sentence: "Yo también quiero ir.", sentenceTh: "ฉันก็อยากไปเหมือนกัน" },
-            { word: "año", pos: "noun", meaning: "ปี", sentence: "Tengo veinte años.", sentenceTh: "ฉันอายุยี่สิบปี" },
-            { word: "tiempo", pos: "noun", meaning: "เวลา / อากาศ", sentence: "No tengo tiempo hoy.", sentenceTh: "วันนี้ฉันไม่มีเวลา" },
-            { word: "día", pos: "noun", meaning: "วัน", sentence: "¡Buen día a todos!", sentenceTh: "อรุณสวัสดิ์ทุกคน!" },
-            { word: "vez", pos: "noun", meaning: "ครั้ง", sentence: "Es la primera vez que vengo.", sentenceTh: "นี่เป็นครั้งแรกที่ฉันมา" },
-            { word: "hombre", pos: "noun", meaning: "ผู้ชาย", sentence: "El hombre camina por la calle.", sentenceTh: "ผู้ชายคนนั้นกำลังเดินอยู่บนถนน" },
-
-            { word: "mujer", pos: "noun", meaning: "ผู้หญิง / ภรรยา", sentence: "La mujer es muy inteligente.", sentenceTh: "ผู้หญิงคนนั้นฉลาดมาก" },
-            { word: "casa", pos: "noun", meaning: "บ้าน", sentence: "Bienvenidos a mi casa.", sentenceTh: "ยินดีต้อนรับสู่บ้านของฉัน" },
-            { word: "vida", pos: "noun", meaning: "ชีวิต", sentence: "La vida es hermosa.", sentenceTh: "ชีวิตมันสวยงาม" },
-            { word: "amigo / amiga", pos: "noun", meaning: "เพื่อน", sentence: "Juan es mi mejor amigo.", sentenceTh: "ฮวนเป็นเพื่อนที่ดีที่สุดของฉัน" },
-            { word: "trabajo", pos: "noun", meaning: "งาน / การทำงาน", sentence: "Tengo mucho trabajo.", sentenceTh: "ฉันมีงานเยอะมาก" },
-            { word: "nuevo / nueva", pos: "adjective", meaning: "ใหม่", sentence: "Tengo un coche nuevo.", sentenceTh: "ฉันมีรถคันใหม่" },
-            { word: "bueno / buena", pos: "adjective", meaning: "ดี", sentence: "Es una buena idea.", sentenceTh: "มันเป็นความคิดที่ดี" },
-            { word: "grande", pos: "adjective", meaning: "ใหญ่", sentence: "Esa ciudad es muy grande.", sentenceTh: "เมืองนั้นใหญ่มาก" },
-            { word: "pequeño / pequeña", pos: "adjective", meaning: "เล็ก", sentence: "El gato es muy pequeño.", sentenceTh: "แมวตัวนั้นเล็กมาก" },
-            { word: "siempre", pos: "adverb", meaning: "เสมอ / ตลอดเวลา", sentence: "Siempre te recordaré.", sentenceTh: "ฉันจะจดจำคุณเสมอ" }
-        ];
-
-        // State Variables
-        const WORDS_PER_ROUND = 10;
-        let currentRound = 1;
-        let currentIndex = 0; // Absolute index (0 - 49)
-        let isFlipped = false;
-
-        // Elements
-        const flashcardContainer = document.getElementById('flashcardContainer');
-        const flashcard = document.getElementById('flashcard');
-        const roundSelect = document.getElementById('roundSelect');
-        const roundProgressText = document.getElementById('roundProgressText');
-        const cardCounter = document.getElementById('cardCounter');
-        const progressBar = document.getElementById('progressBar');
-
-        const vocabFront = document.getElementById('vocabFront');
-        const posFront = document.getElementById('posFront');
-        const posLabel = document.getElementById('posLabel');
-
-        const posBack = document.getElementById('posBack');
-        const meaningBack = document.getElementById('meaningBack');
-        const sentenceEs = document.getElementById('sentenceEs');
-        const sentenceTh = document.getElementById('sentenceTh');
-
-        const btnPrev = document.getElementById('btnPrev');
-        const btnNext = document.getElementById('btnNext');
-
-        // Initialize Options
-        function initRounds() {
-            const totalRounds = Math.ceil(wordsData.length / WORDS_PER_ROUND);
-            roundSelect.innerHTML = '';
-            for (let i = 1; i <= totalRounds; i++) {
-                const opt = document.createElement('option');
-                opt.value = i;
-                opt.textContent = `รอบที่ ${i} (${(i - 1) * WORDS_PER_ROUND + 1} - ${i * WORDS_PER_ROUND})`;
-                roundSelect.appendChild(opt);
-            }
-            roundSelect.addEventListener('change', (e) => {
-                currentRound = parseInt(e.target.value);
-                currentIndex = (currentRound - 1) * WORDS_PER_ROUND;
-                resetFlip();
-                updateUI();
-            });
+    // แสดงข้อมูลบนการ์ด
+    function showCard() {
+        if (currentQueue.length === 0) {
+            nextRound();
+            return;
         }
 
-        // Reset Flip State to Front Side
-        function resetFlip() {
-            isFlipped = false;
-            flashcard.classList.remove('rotate-y-180');
+        if (currentIndex >= currentQueue.length) {
+            currentIndex = 0;
         }
 
-        // Toggle Flip
-        function flipCard() {
-            isFlipped = !isFlipped;
-            if (isFlipped) {
-                flashcard.classList.add('rotate-y-180');
-            } else {
-                flashcard.classList.remove('rotate-y-180');
-            }
+        const item = currentQueue[currentIndex];
+        
+        // หน้าหน้า
+        document.getElementById("frontWord").innerText = item.word;
+        document.getElementById("frontPos").innerText = item.pos;
+        
+        // หน้าหลัง
+        document.getElementById("backTranslation").innerText = item.translation;
+        document.getElementById("backSentence").innerText = item.sentence;
+
+        // รีเซ็ตกลับไปหน้าแรกเสมอเมื่อเปลี่ยนคำ
+        showFront();
+        updateStatus();
+    }
+
+    function toggleCard() {
+        if (isFront) {
+            showBack();
+        } else {
+            showFront();
         }
+    }
 
-        // Update UI View
-        function updateUI() {
-            const currentItem = wordsData[currentIndex];
-            const roundStartIndex = (currentRound - 1) * WORDS_PER_ROUND;
-            const roundEndIndex = Math.min(currentRound * WORDS_PER_ROUND, wordsData.length);
-            const indexInRound = currentIndex - roundStartIndex + 1;
-            const totalInRound = roundEndIndex - roundStartIndex;
+    function showFront() {
+        isFront = true;
+        document.getElementById("cardFront").classList.remove("hidden");
+        document.getElementById("cardBack").classList.add("hidden");
+    }
 
-            // Front
-            vocabFront.textContent = currentItem.word;
-            posFront.textContent = currentItem.pos;
-            posLabel.textContent = `( ${currentItem.pos} )`;
+    function showBack() {
+        isFront = false;
+        document.getElementById("cardFront").classList.add("hidden");
+        document.getElementById("cardBack").classList.remove("hidden");
+    }
 
-            // Back
-            posBack.textContent = currentItem.pos;
-            meaningBack.textContent = currentItem.meaning;
-            sentenceEs.textContent = currentItem.sentence;
-            sentenceTh.textContent = currentItem.sentenceTh;
+    function updateStatus() {
+        document.getElementById("statusBar").innerText = 
+            `รอบที่ ${currentRound}/${maxRounds} | เหลือในรอบนี้: ${currentQueue.length} คำ`;
+    }
 
-            // Indicator
-            roundProgressText.textContent = `รอบที่ ${currentRound} (คำที่ ${roundStartIndex + 1} - ${roundEndIndex})`;
-            cardCounter.textContent = `${indexInRound} / ${totalInRound}`;
-            
-            // Progress Bar Percentage
-            const progressPercent = (indexInRound / totalInRound) * 100;
-            progressBar.style.width = `${progressPercent}%`;
+    // ปุ่มจำได้ -> ลบคำศัพท์นี้ออกจากรอบปัจจุบัน
+    function handleRemember() {
+        currentQueue.splice(currentIndex, 1);
+        showCard();
+    }
 
-            // Nav Button States
-            btnPrev.disabled = currentIndex <= roundStartIndex;
-            btnNext.disabled = currentIndex >= roundEndIndex - 1;
+    // ปุ่มผ่าน (จำไม่ได้) -> เลื่อนไปคำถัดไปเพื่อนวนกลับมาใหม่
+    function handlePass() {
+        currentIndex++;
+        showCard();
+    }
+
+    function nextRound() {
+        if (currentRound < maxRounds) {
+            currentRound++;
+            alert(`ยินดีด้วย! คุณผ่านรอบที่ ${currentRound - 1} แล้ว เริ่มรอบที่ ${currentRound}`);
+            loadRoundWords();
+            showCard();
+        } else {
+            alert("ยินดีด้วย! คุณเรียนครบทั้งหมด 20 รอบแล้ว");
         }
+    }
 
-        // Navigation Actions
-        function nextCard() {
-            const roundEndIndex = Math.min(currentRound * WORDS_PER_ROUND, wordsData.length);
-            if (currentIndex < roundEndIndex - 1) {
-                resetFlip();
-                setTimeout(() => {
-                    currentIndex++;
-                    updateUI();
-                }, 150);
-            }
+    // ระบบอ่านออกเสียงภาษาสเปน (Web Speech API)
+    function speakText(text) {
+        if ('speechSynthesis' in window) {
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'es-ES';
+            window.speechSynthesis.speak(utterance);
+        } else {
+            alert("เบราว์เซอร์ของคุณไม่รองรับระบบอ่านออกเสียง");
         }
+    }
 
-        function prevCard() {
-            const roundStartIndex = (currentRound - 1) * WORDS_PER_ROUND;
-            if (currentIndex > roundStartIndex) {
-                resetFlip();
-                setTimeout(() => {
-                    currentIndex--;
-                    updateUI();
-                }, 150);
-            }
-        }
+    function speakCurrentWord() {
+        const item = currentQueue[currentIndex];
+        if (item) speakText(item.word);
+    }
 
-        // Speech Synthesis (Text-to-Speech)
-        function speakText(text) {
-            if ('speechSynthesis' in window) {
-                // Cancel previous speech
-                window.speechSynthesis.cancel();
+    function speakCurrentSentence() {
+        const item = currentQueue[currentIndex];
+        if (item) speakText(item.sentence);
+    }
 
-                const utterance = new SpeechSynthesisUtterance(text);
-                utterance.lang = 'es-ES'; // Spanish (Spain)
-                utterance.rate = 0.9; // Slightly slower for clarity
-                
-                window.speechSynthesis.speak(utterance);
-            } else {
-                alert('เบราว์เซอร์ของคุณไม่รองรับการออกเสียงข้อความ');
-            }
-        }
+    window.onload = init;
+</script>
 
-        // Keyboard Navigation Support
-        document.addEventListener('keydown', (e) => {
-            if (e.code === 'Space') {
-                e.preventDefault();
-                flipCard();
-            } else if (e.code === 'ArrowRight') {
-                nextCard();
-            } else if (e.code === 'ArrowLeft') {
-                prevCard();
-            }
-        });
-
-        // Initialize App
-        initRounds();
-        updateUI();
-    </script>
 </body>
 </html>
+
